@@ -1,6 +1,4 @@
 require 'erubi'
-require './command'
-require './command_range'
 require 'date'
 
 set :erb, :escape_html => true
