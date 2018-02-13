@@ -20,28 +20,41 @@ helpers do
   end
 
   def title
-    "Completed Jobs"
+    "Usage Report"
   end
 end
 
-get '/show/:id' do
-  @id = params[:id]
-  @message = "Showing details for #{@id}"
-  @command = Command.new(@id)
-
-  @output, @error = @command.exec
-
-  # Render the view
-  erb :show
-end
+Reports = Struct.new(:range, :count, :cmd)
 
 # Define a route at the root '/' of the app.
 get '/' do
-  @start_date = params[:start_date] || (DateTime.now.to_time - 3600).to_datetime.strftime("%FT%R")
-  @end_date = params[:end_date] || DateTime.now.strftime("%FT%R")
-  @command = CommandRange.new(@start_date, @end_date)
+  # minutes since end of day
+  elapsed_minutes_today = ((DateTime.now.to_time - Date.today.to_time)/60).to_i
 
-  @processes, @error = @command.exec
+  @reports = []
+
+  cmd = %Q[find /var/log/nginx -name access.log -newermt "#{elapsed_minutes_today} minutes ago" | wc -l]
+  @reports << Reports.new("Today", `#{cmd}`, cmd)
+
+  cmd = %Q[find /var/log/nginx -name access.log -newermt "#{(Date.today - 1).strftime('%e %b %Y')}" | wc -l]
+  @reports << Reports.new("Since Yesterday", `#{cmd}`, cmd)
+
+  cmd = %Q[find /var/log/nginx -name access.log -newermt "1 weeks ago" | wc -l]
+  @reports << Reports.new("Since 1 Week Ago", `#{cmd}`, cmd)
+
+  cmd = %Q[find /var/log/nginx -name access.log -newermt "1 months ago" | wc -l]
+  @reports << Reports.new("Since 1 Month Ago", `#{cmd}`, cmd)
+
+  cmd = %Q[find /var/log/nginx -name access.log -newermt "3 months ago" | wc -l]
+  @reports << Reports.new("Since 3 Months Ago", `#{cmd}`, cmd)
+
+  cmd = %Q[find /var/log/nginx -name access.log -newermt "1 years ago" | wc -l]
+  @reports << Reports.new("Since 1 Year Ago", `#{cmd}`, cmd)
+
+  cmd = %Q[ls -1 /var/log/nginx | wc -l]
+  @reports << Reports.new("All Time", `#{cmd}`, cmd)
+
+  @error = nil
 
   # Render the view
   erb :index

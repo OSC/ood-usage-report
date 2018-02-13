@@ -1,2 +1,2 @@
-name: Completed Jobs
-description: Display list of completed jobs via sacct
+name: Usage Report
+description: Display basic usage metrics
