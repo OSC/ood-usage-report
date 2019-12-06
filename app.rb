@@ -31,25 +31,25 @@ get '/' do
 
   @reports = []
 
-  cmd = %Q[find /var/log/nginx -name access.log -newermt "#{elapsed_minutes_today} minutes ago" | wc -l]
+  cmd = %Q[find /var/log/ondemand-nginx -name access.log -newermt "#{elapsed_minutes_today} minutes ago" | wc -l]
   @reports << Reports.new("Today", `#{cmd}`, cmd)
 
-  cmd = %Q[find /var/log/nginx -name access.log -newermt "#{(Date.today - 1).strftime('%e %b %Y')}" | wc -l]
+  cmd = %Q[find /var/log/ondemand-nginx -name access.log -newermt "#{(Date.today - 1).strftime('%e %b %Y')}" | wc -l]
   @reports << Reports.new("Since Yesterday", `#{cmd}`, cmd)
 
-  cmd = %Q[find /var/log/nginx -name access.log -newermt "1 weeks ago" | wc -l]
+  cmd = %Q[find /var/log/ondemand-nginx -name access.log -newermt "1 weeks ago" | wc -l]
   @reports << Reports.new("Since 1 Week Ago", `#{cmd}`, cmd)
 
-  cmd = %Q[find /var/log/nginx -name access.log -newermt "1 months ago" | wc -l]
+  cmd = %Q[find /var/log/ondemand-nginx -name access.log -newermt "1 months ago" | wc -l]
   @reports << Reports.new("Since 1 Month Ago", `#{cmd}`, cmd)
 
-  cmd = %Q[find /var/log/nginx -name access.log -newermt "3 months ago" | wc -l]
+  cmd = %Q[find /var/log/ondemand-nginx -name access.log -newermt "3 months ago" | wc -l]
   @reports << Reports.new("Since 3 Months Ago", `#{cmd}`, cmd)
 
-  cmd = %Q[find /var/log/nginx -name access.log -newermt "1 years ago" | wc -l]
+  cmd = %Q[find /var/log/ondemand-nginx -name access.log -newermt "1 years ago" | wc -l]
   @reports << Reports.new("Since 1 Year Ago", `#{cmd}`, cmd)
 
-  cmd = %Q[ls -1 /var/log/nginx | wc -l]
+  cmd = %Q[ls -1 /var/log/ondemand-nginx | wc -l]
   @reports << Reports.new("All Time", `#{cmd}`, cmd)
 
   @error = nil
